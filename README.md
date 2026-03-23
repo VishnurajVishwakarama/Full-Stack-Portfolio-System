@@ -1,237 +1,134 @@
-# Vishnuraj Vishwakarma — Full-Stack Portfolio System
+# Full-Stack Portfolio System & Admin Dashboard
 
-A production-grade personal portfolio with a secure admin dashboard, built with Next.js 14, Firebase, Tailwind CSS, and Framer Motion.
+<div align="center">
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js" />
+  <img alt="React" src="https://img.shields.io/badge/React-18-blue?style=for-the-badge&logo=react" />
+  <img alt="Supabase" src="https://img.shields.io/badge/Supabase-Database-3ECF8E?style=for-the-badge&logo=supabase" />
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css" />
+  <img alt="Framer Motion" src="https://img.shields.io/badge/Framer_Motion-white?style=for-the-badge&logo=framer" />
+</div>
+
+<br />
+
+A production-grade, highly customizable, and SEO-optimized personal portfolio with a secure built-in Admin Dashboard. Built with Next.js 14 App Router, Supabase (PostgreSQL & Storage), Tailwind CSS, and Framer Motion for a premium, glassmorphism-inspired UI.
+
+Whether you are a developer, designer, or freelancer, this portfolio system provides a beautifully animated public interface and a fully functional CMS (Content Management System) to manage your content dynamically—no coding required after initial setup!
+
+## ✨ Key Features
+
+- **Premium UI/UX:** Stunning glassmorphism design, glowing micro-animations, and a cohesive dark-mode aesthetic.
+- **Dynamic Admin Dashboard:** Manage Projects, Certificates, Skills, Gallery, and CV directly from the web interface.
+- **Supabase Backend:** Extremely fast and secure real-time data fetching, file uploads, and authentication.
+- **SEO Optimized:** Next.js Server-Side Rendering (SSR) and dynamic metadata ensure your portfolio ranks well on Google.
+- **Contact Form Inbox:** Visitors can message you, and it lands securely in your Admin Inbox.
+- **Automated Image Optimization:** Automatically compresses images before uploading to Supabase Storage.
+- **100% Customizable:** Easily adapt colors, fonts, and layouts using Tailwind CSS.
 
 ---
 
-## System Architecture
+## 🏗️ System Architecture
 
-```
-Public Portfolio  ─────►  Firebase Firestore (real-time)  ◄─────  Admin Panel
- (anyone visits)            Firebase Storage (files)          (only you login)
-                            Firebase Auth (admin gate)
-```
-
----
-
-## Project Structure
-
-```
-vv-portfolio/
-├── src/
-│   ├── app/
-│   │   ├── page.tsx                  # Public portfolio (all sections)
-│   │   ├── layout.tsx                # Root layout + providers
-│   │   └── admin/
-│   │       ├── layout.tsx            # Admin sidebar + auth guard
-│   │       ├── page.tsx              # Login page
-│   │       ├── dashboard/page.tsx    # Stats overview
-│   │       ├── projects/page.tsx     # CRUD projects
-│   │       ├── certificates/page.tsx # CRUD certificates + verify links
-│   │       ├── gallery/page.tsx      # Upload / manage photos
-│   │       ├── cv/page.tsx           # Upload / version CV PDFs
-│   │       ├── skills/page.tsx       # Manage skill bars
-│   │       └── messages/page.tsx     # Contact form inbox
-│   ├── components/
-│   │   └── ui/
-│   │       ├── index.tsx             # Button, Badge, Card, Modal, Input, etc.
-│   │       └── Cursor.tsx            # Animated cursor
-│   ├── hooks/
-│   │   └── useAuth.tsx               # Firebase auth context
-│   ├── lib/
-│   │   ├── firebase.ts               # Firebase app init
-│   │   └── services.ts               # All Firestore + Storage CRUD
-│   ├── types/
-│   │   └── index.ts                  # TypeScript interfaces
-│   └── styles/
-│       └── globals.css               # Design tokens + utilities
-├── firestore.rules                   # Security rules (deploy separately)
-├── storage.rules                     # Storage rules (deploy separately)
-├── vercel.json                       # Vercel config
-├── tailwind.config.js
-├── next.config.js
-└── package.json
+```text
+Public Portfolio  ─────►  Supabase Postgres DB    ◄─────  Admin Dashboard
+ (SEO Optimized)            Supabase Storage              (Secure Login)
+                            Supabase Auth
 ```
 
 ---
 
-## Setup Guide (Step by Step)
+## 🚀 Step-by-Step Setup Guide
 
-### Step 1 — Create Firebase Project
+Follow this guide to get your portfolio up and running in minutes. Anyone can do it!
 
-1. Go to [console.firebase.google.com](https://console.firebase.google.com)
-2. Click **Add Project** → Name it `vv-portfolio`
-3. Enable **Google Analytics** (optional)
-4. In Project Settings → **Your Apps** → Add a **Web App**
-5. Copy the config object (you'll need it for Step 3)
+### 1. Clone the Repository
 
-### Step 2 — Enable Firebase Services
+```bash
+git clone https://github.com/VishnurajVishwakarama/Full-Stack-Portfolio-System.git
+cd Full-Stack-Portfolio-System
+npm install
+```
 
-In the Firebase Console:
+### 2. Set Up Supabase (Free Database)
 
-**Authentication:**
-- Build → Authentication → Get Started
-- Sign-in methods → Enable **Email/Password**
-- Users → Add user → enter `vishnurajvishwakarma@gmail.com` + a strong password
+We use Supabase as our free, open-source backend.
 
-**Firestore Database:**
-- Build → Firestore Database → Create database
-- Start in **production mode**
-- Choose region: **asia-south1** (Mumbai)
+1. Go to [Supabase](https://supabase.com/) and create a new project.
+2. Under **Authentication**, enable the "Email" provider. Create a new user with your email and a strong password (this will be your Admin login).
+3. Under **SQL Editor**, run queries to create your tables (`projects`, `certificates`, `skills`, `gallery`, `cv`, `messages`, `settings`). Ensure you configure appropriate Policies to only allow authenticated users to mutate records.
+4. Under **Storage**, create public buckets named `projects`, `certificates`, `gallery`, and `cv`. 
 
-**Storage:**
-- Build → Storage → Get Started
-- Start in production mode
+### 3. Environment Variables
 
-### Step 3 — Configure Environment Variables
-
-Copy `.env.local.example` to `.env.local` and fill in your Firebase values:
+Create a `.env.local` file in the root of the project:
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-Edit `.env.local`:
-```
-NEXT_PUBLIC_FIREBASE_API_KEY=AIza...
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=vv-portfolio-xxx.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=vv-portfolio-xxx
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=vv-portfolio-xxx.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789
-NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789:web:abc123
+Add your Supabase keys from **Project Settings > API**:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-### Step 4 — Deploy Security Rules
-
-Install Firebase CLI if needed:
-```bash
-npm install -g firebase-tools
-firebase login
-firebase init  # Select Firestore + Storage, use existing project
-```
-
-Deploy rules:
-```bash
-firebase deploy --only firestore:rules,storage
-```
-
-### Step 5 — Install and Run Locally
+### 4. Run the App Locally
 
 ```bash
-npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) — portfolio  
-Open [http://localhost:3000/admin](http://localhost:3000/admin) — admin panel
+- **Public Portfolio:** [http://localhost:3000](http://localhost:3000)
+- **Admin Dashboard:** [http://localhost:3000/admin](http://localhost:3000/admin) (Log in with the Supabase email and password you created in Step 2).
 
-### Step 6 — Deploy to Vercel
+### 5. Deploy to Vercel (Free Hosting)
 
-**Option A — Drag & Drop:**
-1. Run `npm run build` to verify no errors
-2. Go to [vercel.com/new](https://vercel.com/new)
-3. Import your GitHub repo (push this folder first)
+The easiest way to deploy is using Vercel.
 
-**Option B — Vercel CLI:**
-```bash
-npm i -g vercel
-vercel
-```
-
-**Add Environment Variables in Vercel:**  
-Project Settings → Environment Variables → add all 6 `NEXT_PUBLIC_FIREBASE_*` values
+1. Push your code to your GitHub repository.
+2. Go to [Vercel](https://vercel.com/) and import the project.
+3. In the Vercel setup, add your `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to the Environment Variables section.
+4. Click **Deploy**. Your professional portfolio is now live on the internet and indexed by search engines!
 
 ---
 
-## Admin Panel Usage
+## 🛠️ Tech Stack
 
-| URL | Feature |
-|-----|---------|
-| `/admin` | Login with Firebase email/password |
-| `/admin/dashboard` | Stats overview, quick actions |
-| `/admin/projects` | Add/edit/delete projects with images and proof links |
-| `/admin/certificates` | Add certificates with verification URLs |
-| `/admin/gallery` | Drag & drop photo uploads with tags |
-| `/admin/cv` | Upload PDF CVs, manage versions, set active |
-| `/admin/skills` | Add/edit skill bars with proficiency levels |
-| `/admin/messages` | Read contact form submissions |
-
-**All changes reflect on the public portfolio instantly** — no redeployment needed.
+- **Framework:** Next.js 14 App Router
+- **Styling:** Tailwind CSS + `clsx` + `tailwind-merge`
+- **Animations:** Framer Motion
+- **Database & Auth:** Supabase (PostgreSQL)
+- **Icons:** Lucide React
+- **Image Processing:** browser-image-compression
+- **Hosting:** Vercel
 
 ---
 
-## Customization
+## 🎨 Customizing the Portfolio
 
-### Update Your Personal Info
-Add site settings to Firestore manually:
-1. Go to Firestore → `settings` collection → Add document `site`
-2. Fields:
-```json
-{
-  "name": "Vishnuraj Vishwakarma",
-  "role": "Founder & COO — Austrange Solutions Pvt Ltd",
-  "tagline": "Turning raw data into decisions that shape the future.",
-  "bio": "Your full bio here...",
-  "email": "vishnurajvishwakarma@gmail.com",
-  "phone": "+91 93228 71984",
-  "location": "Mumbai, India",
-  "githubUrl": "https://github.com/VishnurajVishwakarama",
-  "linkedinUrl": "https://linkedin.com/in/vishnuraj-vishwakarma",
-  "availability": true
-}
-```
+### Changing Site Settings
+Once logged into the Admin panel, you can instantly change your name, title, bio, and social links in real time from the Settings card. Changes take effect on the public portfolio instantly!
 
-### Seed Initial Skills
-Add via Admin panel → Skills, or manually in Firestore `skills` collection.
-
-### Add Your Photo
-Replace the `VV` initials in `src/app/page.tsx` hero section with an `<Image>` component pointing to your uploaded photo URL.
-
-### Update Firebase Rules Email
-In both `firestore.rules` and `storage.rules`, update the admin email check:
-```
-&& request.auth.token.email == 'your-actual-email@gmail.com'
-```
+### Customizing Colors
+Modify `tailwind.config.ts` and `src/styles/globals.css` to update the global theme, gradients, glowing effects, and font families.
 
 ---
 
-## Tech Stack
+## 🤝 Contributing
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 14 (App Router) |
-| Styling | Tailwind CSS |
-| Animation | Framer Motion |
-| Database | Firebase Firestore (real-time) |
-| Storage | Firebase Storage |
-| Auth | Firebase Authentication |
-| Forms | React Hook Form |
-| File Upload | React Dropzone |
-| Icons | Lucide React |
-| Hosting | Vercel |
+Contributions are always welcome! If you have any ideas, suggestions, or bug fixes to make this portfolio even more SEO-friendly or better designed, feel free to open an issue or create a pull request.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
-## Features Summary
+## 📝 License
 
-- Dark mode only (with light mode toggle ready)
-- Real-time sync — admin changes show on portfolio instantly
-- Firebase Auth — only your email can access admin
-- Firestore security rules — public reads, admin-only writes
-- Storage rules — file size limits, PDF-only for CV
-- Draft/Publish mode for projects and certificates
-- Skill bars with animated progress on scroll
-- Certificate modal with live verification links
-- Gallery with drag-and-drop upload and tag filtering
-- CV version management — set any version as active
-- Contact form with admin inbox + reply via email
-- Custom animated cursor
-- Scroll progress indicator
-- SEO meta tags pre-configured
-- Responsive — mobile + desktop
+Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
-
-Built for Vercel + Firebase · Mumbai, India
-# Full-Stack-Portfolio-System
-# Full-Stack-Portfolio-System
+*Built by [Vishnuraj Vishwakarma](https://github.com/VishnurajVishwakarama)*
